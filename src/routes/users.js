@@ -66,10 +66,23 @@ router.post("/user", auth.auth, middlewares.validateBodyUser, auth.validateAdmi,
   }
 })
 
-router.patch("/user/:id", middlewares.validateBodyUser, auth.auth, async (req, res) => {
+router.patch("/user/:id", middlewares.validateBodyUpdateUser, auth.auth, auth.validateAdmi, async (req, res) => {
+  const isAdmi = req.admi
   const params = req.body
-  const result = await actions.Update(`UPDATE users SET Email =:Email WHERE Id =${req.params.id}`, params)
-  res.json(result)
+  let result
+  if (isAdmi === 1) {
+    try {
+      result = await actions.Update(`UPDATE users SET Email =:Email, Phone =:Phone, Adress =:Adress, IdRole =:IdRole WHERE Id =${req.params.id}`, params)
+    } catch (error) {
+      res.status(500).json(error)
+    }
+    res.status(200).json({ succes: true, message: "User has been updated" })
+  } else {
+    res.json({
+      error: "This user has not authorization for make this request ",
+      codeError: 01,
+    })
+  }
 })
 
 router.delete("/user/:id", auth.auth, auth.validateAdmi, async (req, res) => {
