@@ -69,7 +69,7 @@ router.patch("/order/:id", auth.auth, auth.validateAdmi, middlewares.validateBod
     res.status(200).json({ succes: true, message: "Order has been updated" })
   } else {
     res.json({
-      error: "This user has not authorization for make this request ",
+      error: "This user has not authorization for make this request",
       codeError: 01,
     })
   }
@@ -84,7 +84,6 @@ router.delete("/order/:id", auth.auth, auth.validateAdmi, async (req, res) => {
     const resultOrder = await actions.Delete("DELETE FROM orders WHERE Id =:id", {
       id: req.params.id,
     })
-    res.status(200).json({ succes: true, message: "Product has been deleted" })
   } else {
     res.json({
       error: "This user has not authorization for make this request ",
