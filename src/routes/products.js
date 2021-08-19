@@ -58,8 +58,23 @@ router.post("/product", auth.auth, auth.validateAdmi, middlewares.validateBodyPr
   }
 })
 
-router.patch("/products/:id", auth.auth, auth.validateAdmi, async (req, res) => {
-  //Code here
+router.patch("/product/:id", auth.auth, auth.validateAdmi, async (req, res) => {
+  const isAdmi = req.admi
+  const params = req.body
+  let result
+  if (isAdmi === 1) {
+    try {
+      result = await actions.Update(`UPDATE products SET Name =:Name, Price =:Price WHERE Id =${req.params.id}`, params)
+    } catch (error) {
+      res.status(500).json(error)
+    }
+    res.status(200).json({ succes: true, message: "Product has been updated" })
+  } else {
+    res.json({
+      error: "This user has not authorization for make this request ",
+      codeError: 01,
+    })
+  }
 })
 
 router.delete("/products/:id", auth.auth, auth.validateAdmi, async (req, res) => {
