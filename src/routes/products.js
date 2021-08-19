@@ -58,7 +58,7 @@ router.post("/product", auth.auth, auth.validateAdmi, middlewares.validateBodyPr
   }
 })
 
-router.patch("/product/:id", auth.auth, auth.validateAdmi, async (req, res) => {
+router.patch("/product/:id", auth.auth, auth.validateAdmi, middlewares.validateBodyUpdateProduct, async (req, res) => {
   const isAdmi = req.admi
   const params = req.body
   let result

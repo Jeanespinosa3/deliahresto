@@ -44,13 +44,30 @@ module.exports.validateBodyProduct = (req, res, next) => {
 module.exports.validateBodyUpdateUser = (req, res, next) => {
   const user = req.body
   const userSchema = joi.object({
-    Email: joi.string().email(),
+    Email: joi.string().email().required(),
     Phone: joi
       .string()
       .length(10)
-      .pattern(/^[0-9]+$/),
-    Adress: joi.string(),
-    IdRole: joi.string().alphanum(),
+      .pattern(/^[0-9]+$/)
+      .required(),
+    Adress: joi.string().required(),
+    IdRole: joi.string().alphanum().required(),
+  })
+  const result = userSchema.validate(user)
+  const { value, error } = result
+  const valid = error == null
+  if (!valid) {
+    res.status(400).json({ succes: false, message: "Validation error", data: value, error: error })
+  } else {
+    next()
+  }
+}
+
+module.exports.validateBodyUpdateProduct = (req, res, next) => {
+  const user = req.body
+  const userSchema = joi.object({
+    Name: joi.string().required(),
+    Price: joi.string().alphanum().required(),
   })
   const result = userSchema.validate(user)
   const { value, error } = result
