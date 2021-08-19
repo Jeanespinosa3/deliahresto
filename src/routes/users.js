@@ -69,6 +69,7 @@ router.post("/user", auth.auth, middlewares.validateBodyUser, auth.validateAdmi,
 router.patch("/user/:id", middlewares.validateBodyUpdateUser, auth.auth, auth.validateAdmi, async (req, res) => {
   const isAdmi = req.admi
   const params = req.body
+  const resultQuery = await actions.Select("SELECT * FROM users WHERE Id = :id", { id: req.params.id })
   let result
   if (isAdmi === 1) {
     try {
@@ -76,7 +77,11 @@ router.patch("/user/:id", middlewares.validateBodyUpdateUser, auth.auth, auth.va
     } catch (error) {
       res.status(500).json(error)
     }
-    res.status(200).json({ succes: true, message: "User has been updated" })
+    if (!resultQuery.length) {
+      res.status(404).json({ succes: false, message: "user not found" })
+    } else {
+      res.status(200).json({ succes: true, message: "User has been updated" })
+    }
   } else {
     res.json({
       error: "This user has not authorization for make this request ",
@@ -87,11 +92,14 @@ router.patch("/user/:id", middlewares.validateBodyUpdateUser, auth.auth, auth.va
 
 router.delete("/user/:id", auth.auth, auth.validateAdmi, async (req, res) => {
   const isAdmi = req.admi
+  const resultQuery = await actions.Select(`SELECT * FROM users WHERE Id =:id`, { id: req.params.id })
   if (isAdmi === 1) {
-    const result = await actions.Delete("DELETE FROM users WHERE Id =:id", {
-      id: req.params.id,
-    })
-    res.status(200).json({ succes: true, message: "User has been deleted" })
+    const result = await actions.Delete(`DELETE FROM users WHERE Id =:id`, { id: req.params.id })
+    if (!resultQuery.length) {
+      res.status(404).json({ succes: false, message: "User not found" })
+    } else {
+      res.status(200).json({ succes: true, message: "User has been deleted" })
+    }
   } else {
     res.json({
       error: "This user has not authorization for make this request ",

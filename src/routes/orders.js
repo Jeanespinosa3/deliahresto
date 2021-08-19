@@ -9,12 +9,30 @@ router.get("/orders", auth.auth, auth.validateAdmi, async (req, res) => {
   const isAdmi = req.admi
   const id = req.userId
   if (isAdmi === 1) {
-    const result = await actions.Select("SELECT * FROM orders", {})
+    const result = await actions.Select(
+      `
+      SELECT orders.Id, orders.DateTime, orders.Description, orders.Total, payment.PaymentMethod, users.Fullname, users.Adress, states.State
+      FROM orders
+      INNER JOIN users ON (orders.IdUser = users.Id)
+      INNER JOIN payment ON (orders.Payment = payment.Id)
+      INNER JOIN states ON (orders.State = states.Id)
+       `,
+      {}
+    )
     res.json(result)
     console.log(isAdmi)
   }
   if (isAdmi === 2) {
-    const result = await actions.Select(`SELECT * FROM orders WHERE IdUser =:id`, { id: id })
+    const result = await actions.Select(
+      `
+      SELECT orders.Id, orders.DateTime, orders.Description, orders.Total, payment.PaymentMethod, users.Fullname, users.Adress, states.State
+      FROM orders
+      INNER JOIN users ON (orders.IdUser = users.Id)
+      INNER JOIN payment ON (orders.Payment = payment.Id)
+      INNER JOIN states ON (orders.State = states.Id)
+      WHERE IdUser =:id`,
+      { id: id }
+    )
     res.json(result)
     console.log(isAdmi)
   }
@@ -59,14 +77,21 @@ router.post("/order", async (req, res) => {
 router.patch("/order/:id", auth.auth, auth.validateAdmi, middlewares.validateBodyStateOrder, async (req, res) => {
   const isAdmi = req.admi
   const params = req.body
+  const resultQuery = await actions.Select("SELECT * FROM orders WHERE Id = :id", { id: req.params.id })
   let result
+
   if (isAdmi === 1) {
     try {
       result = await actions.Update(`UPDATE orders SET State =:State WHERE Id =${req.params.id}`, params)
     } catch (error) {
       res.status(500).json(error)
     }
-    res.status(200).json({ succes: true, message: "Order has been updated" })
+
+    if (!resultQuery.length) {
+      res.status(404).json({ succes: false, message: "Order not found" })
+    } else {
+      res.status(200).json({ succes: true, message: "Order has been updated" })
+    }
   } else {
     res.json({
       error: "This user has not authorization for make this request",
@@ -77,6 +102,7 @@ router.patch("/order/:id", auth.auth, auth.validateAdmi, middlewares.validateBod
 
 router.delete("/order/:id", auth.auth, auth.validateAdmi, async (req, res) => {
   const isAdmi = req.admi
+  const resultQuery = await actions.Select("SELECT * FROM orders WHERE Id = :id", { id: req.params.id })
   if (isAdmi === 1) {
     const resultOrderDetails = await actions.Delete("DELETE FROM orderdetails WHERE IdOrder =:id", {
       id: req.params.id,
@@ -84,6 +110,11 @@ router.delete("/order/:id", auth.auth, auth.validateAdmi, async (req, res) => {
     const resultOrder = await actions.Delete("DELETE FROM orders WHERE Id =:id", {
       id: req.params.id,
     })
+    if (!resultQuery.length) {
+      res.status(404).json({ succes: false, message: "Order not found" })
+    } else {
+      res.status(200).json({ succes: true, message: "Order has been Deleted" })
+    }
   } else {
     res.json({
       error: "This user has not authorization for make this request ",
