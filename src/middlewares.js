@@ -78,3 +78,18 @@ module.exports.validateBodyUpdateProduct = (req, res, next) => {
     next()
   }
 }
+
+module.exports.validateBodyStateOrder = (req, res, next) => {
+  const user = req.body
+  const userSchema = joi.object({
+    State: joi.string().alphanum().required(),
+  })
+  const result = userSchema.validate(user)
+  const { value, error } = result
+  const valid = error == null
+  if (!valid) {
+    res.status(400).json({ succes: false, message: "Validation error", data: value, error: error })
+  } else {
+    next()
+  }
+}
