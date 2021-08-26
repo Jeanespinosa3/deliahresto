@@ -5,10 +5,10 @@ const middlewares = require("../middlewares")
 
 const router = express.Router()
 
-router.get("/products", auth.auth, auth.validateAdmi, async (req, res) => {
+router.get("/product", auth.auth, auth.validateAdmi, async (req, res) => {
   const isAdmi = req.admi
 
-  if (isAdmi === 1) {
+  if (isAdmi === 1 || isAdmi === 2) {
     const result = await actions.Select("SELECT * FROM products", {})
     res.json(result)
     console.log(isAdmi)
@@ -61,7 +61,7 @@ router.post("/product", auth.auth, auth.validateAdmi, middlewares.validateBodyPr
 router.patch("/product/:id", auth.auth, auth.validateAdmi, middlewares.validateBodyUpdateProduct, async (req, res) => {
   const isAdmi = req.admi
   const params = req.body
-  const resultQuery = await actions.Select("SELECT * FROM orders WHERE Id = :id", { id: req.params.id })
+  const resultQuery = await actions.Select("SELECT * FROM products WHERE Id = :id", { id: req.params.id })
   let result
   if (isAdmi === 1) {
     try {
@@ -82,7 +82,7 @@ router.patch("/product/:id", auth.auth, auth.validateAdmi, middlewares.validateB
   }
 })
 
-router.delete("/products/:id", auth.auth, auth.validateAdmi, async (req, res) => {
+router.delete("/product/:id", auth.auth, auth.validateAdmi, async (req, res) => {
   const isAdmi = req.admi
   const resultQuery = await actions.Select("SELECT * FROM products WHERE Id = :id", { id: req.params.id })
   if (isAdmi === 1) {

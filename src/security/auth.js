@@ -18,7 +18,7 @@ module.exports.auth = (req, res, next) => {
   } catch (error) {
     res.json({
       error: "This user has not authorization for make this request ",
-      codeError: 01,
+      codeError: 001,
     })
   }
 }

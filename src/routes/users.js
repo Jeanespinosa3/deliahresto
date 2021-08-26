@@ -5,7 +5,7 @@ const middlewares = require("../middlewares")
 
 const router = express.Router() //Ruteo de endpoints
 
-router.get("/users", auth.auth, auth.validateAdmi, async (req, res) => {
+router.get("/user", auth.auth, auth.validateAdmi, async (req, res) => {
   const isAdmi = req.admi
   const id = req.userId
   if (isAdmi === 1) {
@@ -25,7 +25,7 @@ router.get("/user/:id", auth.auth, auth.validateAdmi, async (req, res) => {
   if (isAdmi != 1) {
     res.json({
       error: "This user has not authorization for make this request ",
-      codeError: 01,
+      codeError: 001,
     })
   } else {
     const result = await actions.Select("SELECT * FROM users WHERE Id = :id", {
@@ -61,7 +61,7 @@ router.post("/user", auth.auth, middlewares.validateBodyUser, auth.validateAdmi,
   if (isAdmi !== 1) {
     res.json({
       error: "This user has not authorization for make this request ",
-      codeError: 01,
+      codeError: 001,
     })
   }
 })
@@ -85,7 +85,7 @@ router.patch("/user/:id", middlewares.validateBodyUpdateUser, auth.auth, auth.va
   } else {
     res.json({
       error: "This user has not authorization for make this request ",
-      codeError: 01,
+      codeError: 001,
     })
   }
 })
@@ -103,7 +103,7 @@ router.delete("/user/:id", auth.auth, auth.validateAdmi, async (req, res) => {
   } else {
     res.json({
       error: "This user has not authorization for make this request ",
-      codeError: 01,
+      codeError: 001,
     })
   }
 })

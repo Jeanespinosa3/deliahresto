@@ -17,10 +17,10 @@ router.post("/login", async (req, res) => {
     if (result[0].count == 1) {
       res.json(auth.generateToken({ userName: user.userName }))
     } else {
-      res.status(404).json({ succes: false, message: "User not found" })
+      res.status(404).json({ succes: false, message: "User not found or password not valid" })
     }
   } else {
-    res.status(404).json({ succes: false, message: "User not found" })
+    res.status(404).json({ succes: false, message: "User not found or password not valid" })
   }
 })
 

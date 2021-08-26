@@ -5,7 +5,7 @@ const middlewares = require("../middlewares")
 
 const router = express.Router()
 
-router.get("/orders", auth.auth, auth.validateAdmi, async (req, res) => {
+router.get("/order", auth.auth, auth.validateAdmi, async (req, res) => {
   const isAdmi = req.admi
   const id = req.userId
   if (isAdmi === 1) {
@@ -43,7 +43,7 @@ router.post("/order", auth.auth, auth.validateAdmi, async (req, res) => {
   const bodyOrders = req.body
   const orderInfo = bodyOrders.order
   const ordersDescriptionInfo = bodyOrders.orderDescription
-  if (isAdmi === 1) {
+  if (isAdmi === 1 || isAdmi === 2) {
     try {
       const result = await actions.Insert("INSERT INTO orders (DateTime, Payment, IdUser, State) VALUES (NOW(), :Payment, :IdUser, :State)", orderInfo)
       const idOrder = result[0]
@@ -99,6 +99,30 @@ router.delete("/order/:id", auth.auth, auth.validateAdmi, async (req, res) => {
       res.status(404).json({ succes: false, message: "Order not found" })
     } else {
       res.status(200).json({ succes: true, message: "Order has been Deleted" })
+    }
+  } else {
+    res.json({
+      error: "This user has not authorization for make this request ",
+      codeError: 01,
+    })
+  }
+})
+
+router.patch("/order/:id", auth.auth, auth.validateAdmi, middlewares.validateBodyStateOrder, async (req, res) => {
+  const isAdmi = req.admi
+  const params = req.body
+  const resultQuery = await actions.Select("SELECT * FROM orders WHERE Id = :id", { id: req.params.id })
+  let result
+  if (isAdmi === 1) {
+    try {
+      result = await actions.Update(`UPDATE orders SET State =:State WHERE Id =${req.params.id}`, params)
+    } catch (error) {
+      res.status(500).json(error)
+    }
+    if (!resultQuery.length) {
+      res.status(404).json({ succes: false, message: "Order not found" })
+    } else {
+      res.status(200).json({ succes: true, message: "Order has been updated" })
     }
   } else {
     res.json({
