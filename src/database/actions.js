@@ -1,5 +1,4 @@
-const Sequelize = require("sequelize")
-const database = new Sequelize("mysql://root:blackberry1@localhost:3306/deliahresto") //Cadena de conexión
+const database = require("./connection")
 
 module.exports.Select = async (query, data) => {
   return await database.query(query, {
