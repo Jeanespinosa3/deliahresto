@@ -1,4 +1,4 @@
-# # DELIAHRESTO API
+# DELIAHRESTO API
 
 Bienvenidos a mi API de pedidos de comida en linea. Es un aplicación enfocada en backend, con Node.js y MySQL.
 
