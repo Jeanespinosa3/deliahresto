@@ -6,7 +6,7 @@ Bienvenidos a mi API de pedidos de comida en linea. Es un aplicación enfocada e
 
 - Abre el siguiente link y descarga el archivo DeliahrestoDB.sql https://drive.google.com/file/d/10nC_z3WJeXoE_Anem68T3InGvObNbmlh/view?usp=sharing.
 - Abre tu programa MySQL Workbench y crea una conexión nueva, ten presente el username y password que tienes en tu programa ya que lo necesitaremos en la parte de conexión más adelante.
-- Una vez creado la conexión ingresa a ella y entra a opción **Server** -> **Data Import**. una vez estes en Data import clickea en la opción **Import from Self-Contained File** y selecciona el path en donde guardaste el archivo que descargaste previamente. Luego creas un nuevo esquema por defecto (**Default Target Schema**) con el nombre `deliahresto`. Finalmente le das **Start Import**.
+- Una vez creado la conexión ingresa a ella y entra a opción **Server** -> **Data Import**. una vez estes en Data import da click en la opción **Import from Self-Contained File** y selecciona el path en donde guardaste el archivo que descargaste previamente. Luego creas un nuevo esquema por defecto (**Default Target Schema**) con el nombre `deliahresto`. Finalmente le das **Start Import**.
 - Una vez importado la base de datos, ya puedes acceder a todas las tablas de ella junto a los datos existentes.
 
 ## Conexión y ejecución
